@@ -1,44 +1,41 @@
-這裡是你的 README 改進版本，強調清晰度、組織性與易讀性。我重新整理結構，使內容更直觀，並調整了一些措辭，以確保讀者能更快理解數據集的內容與用途。
-
 ---
 
 # TAVCD (Traffic Accident Verdict Compensation Dataset)
 
 [English Version](https://github.com/Chrouos/TAVCD-Traffic-Accident-Verdict-Compensation-Dataset-/blob/main/README_en.md)
 
-## 簡介
-TAVCD (Traffic Accident Verdict Compensation Dataset) 是一個針對 **台灣交通事故判決書** 進行標記的數據集，包含法院判決內容、事故資訊、人員傷害、財產損失與賠償金額等詳細資訊。本數據集適用於 **學術研究、法律分析、機器學習模型訓練**，並可作為 NLP 領域的標註數據。
+## **簡介**
+TAVCD (Traffic Accident Verdict Compensation Dataset) 是針對 **台灣交通事故判決書** 進行標註的數據集，涵蓋法院判決內容、事故資訊、人員傷害、財產損失與賠償金額等詳細資訊。本數據集適用於 **學術研究、法律分析、機器學習模型訓練**，並可用於 NLP 任務，如文本分類、命名實體識別 (NER) 和資訊擷取。
 
-### 數據規模
-- **標註數據：** 共 **1000** 筆裁判書
-- **標註方式：** 由兩位標記者 (`Labeler_1` & `Labeler_2`) 進行獨立標記，以確保數據的準確性
-- **數據格式：** JSONL (`.jsonl`)
+### **數據概覽**
+- **數據規模**：共 **1000** 筆裁判書
+- **標註方式**：由兩位標記者 (`Labeler_1` & `Labeler_2`) 獨立標記，確保準確性
+- **數據格式**：JSONL (`.jsonl`)
 
 ---
 
-## 目錄結構與數據內容
+## **目錄結構與數據內容**
 
 ### **1. 判決書原始數據**
-位於 `Source/Verdict/` 目錄，包含原始判決內容與處理後的文本：
+> 存放於 `Source/Verdict/` 目錄，包含原始判決內容與處理後的文本。
+
 - **`judgement`**：完整判決書文本（含換行符號）
 - **`cleanJudgement`**：去除特殊符號的純文字版本
-- **`opinion`**：法官的判決內容（從 `judgement` 擷取）
+- **`opinion`**：法官的判決內容（擷取自 `judgement`）
 - **`cleanOpinion`**：法官判決內容的純文字版本（去除特殊符號）
 
----
-
 ### **2. 標註數據**
-標註數據位於 `Source/Labeler_1/` 和 `Source/Labeler_2/` 目錄：
+> 位於 `Source/Labeler_1/` 和 `Source/Labeler_2/` 目錄，存放人工標註結果。
+
 - **`name`**：標註的欄位名稱（如「事故日期」、「賠償金額總額」等）
-- **`value`**：標註的內容
+- **`value`**：標註內容
 - **`the_surrounding_words`**：標註內容的上下文資訊
 - **`position`**：標註內容在判決書中的位置
   - `start_position` & `end_position`（對應文本內的字元索引）
 
----
+### **3. 機器學習訓練數據**
+> 提供 NLP 模型訓練用數據，格式適用於資訊擷取與生成式 AI 應用。
 
-### **3. 模型訓練數據**
-用於機器學習與 NLP 訓練：
 - **`finetuning_training_data_golden.jsonl`**：
   - `input`：完整判決書內容
   - `output`：包含所有標註欄位的 JSON 結構
@@ -49,15 +46,15 @@ TAVCD (Traffic Accident Verdict Compensation Dataset) 是一個針對 **台灣�
 
 ---
 
-## 程式碼
+## **程式碼**
 
-+ `regular_fields.py`
-  + 規則話欄位所屬，例如 `事發經過` 與 `傷勢` 等為字串欄位，`事故日期` 與 `事故車出廠日期` 是關於日期的欄位。
-+ `labeler_to_processed.py`
++ `regular_fields.py` - 定義標註欄位類別，例如 **事故資訊、傷勢、賠償金額** 等，以及哪些欄位需要採用，需要用欄位填入`template_fields`。
++ `processed_to_format.py` - 轉換數據集格式，適用於不同應用場景。
 
+---
 
 ## **標記欄位**
-TAVCD 數據集涵蓋以下類別的資訊：
+TAVCD 數據集涵蓋以下類別資訊：
 
 ### **(1) 事故資訊**
 - 事故日期
@@ -91,22 +88,21 @@ TAVCD 數據集涵蓋以下類別的資訊：
 - 營業損失天數 / 損失金額
 
 ### **(6) 其他資訊**
-- 其他（其他損失或特殊資訊）
+- 其他（特殊情況、未分類損失）
 - 備註
 
 ---
 
 ## **使用方式**
 TAVCD 數據集可用於：
-1. **法律分析**：研究台灣法院對交通事故賠償的判決趨勢
-2. **機器學習 / NLP 訓練**：訓練模型進行判決書解析與資訊擷取
-3. **文本標註應用**：用於關鍵資訊標註、關係抽取、事件識別等研究
+1. **法律分析**：研究台灣法院對交通事故賠償的判決趨勢。
+2. **機器學習 / NLP 訓練**：用於判決書解析、資訊擷取與分類。
+3. **文本標註應用**：關鍵資訊標註、關係抽取、事件識別。
 
-**處理方式（Python 範例）**
+### **簡單閱讀數據**
 ```python
 import json
 
-# 讀取 JSONL 格式數據
 def load_jsonl(file_path):
     data = []
     with open(file_path, 'r', encoding='utf-8') as f:
@@ -121,10 +117,18 @@ data = load_jsonl("finetuning_training_data_golden.jsonl")
 print(json.dumps(data[0], indent=2, ensure_ascii=False))
 ```
 
+### **轉換數據格式**
+```bash
+python ./processed_to_format.py \
+    --type format_data_text \
+    --data_path finetuning_training_data_golden.jsonl \
+    --output_path ./instruction/
+```
+
 ---
 
 ## **貢獻與聯絡**
-如果您對本數據集有任何建議或發現錯誤，歡迎透過以下方式聯繫我們：
+如果您對本數據集有建議或發現錯誤，請透過以下方式聯繫我們：
 - 提交 [GitHub Issue](https://github.com/Chrouos/TAVCD-Traffic-Accident-Verdict-Compensation-Dataset-/issues)
 - 直接聯絡數據集管理員
 
