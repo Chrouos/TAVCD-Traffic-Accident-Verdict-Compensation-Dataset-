@@ -10,4 +10,4 @@ def load_jsonl(file_path):
 
 # 加載數據
 data = load_jsonl("finetuning_training_data_golden.jsonl")
-print(json.dumps(data[0], indent=2, ensure_ascii=False))
+print(json.dumps(data[15], indent=2, ensure_ascii=False))
